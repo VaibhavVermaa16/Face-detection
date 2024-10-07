@@ -2,7 +2,7 @@ numpy
 Pillow
 mtcnn
 keras-facenet
-tensorflow
+tensorflow[and -cuda]
 flask
 flask-cors
 flask-pymongo

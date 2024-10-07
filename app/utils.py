@@ -24,8 +24,10 @@ except Exception as e:
 # Function to save embeddings
 def save_embedding_to_db(embedding, data):
     # If embedding is a NumPy array, convert it to a list
-    if isinstance(embedding, np.ndarray):
-        embedding = embedding.tolist()
+    for i in range(len(embedding)):
+        if isinstance(embedding[i], np.ndarray):
+            embedding[i] = embedding[i].tolist()
+  
 
     # Prepare the document to be inserted into the database
     document = {
