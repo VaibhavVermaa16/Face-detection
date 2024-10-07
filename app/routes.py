@@ -19,6 +19,11 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.route('/', methods=['GET'])
+def home():
+    persons = get_all_embeddings_from_db()
+    return render_template('index.html', persons=persons)
+
 # To route to the upload page
 @app.route('/upload', methods=['GET'])
 def upload_page():
