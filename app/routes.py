@@ -120,9 +120,9 @@ def search():
             return render_template('success.html', message='No face detected in the image %s' % file.filename)
         
         
-        best_match, img_path = find_best_embedding(embeddings, persons)
-        print(img_path)
-        return render_template('person_found.html', person=best_match, img_path=img_path)
+        best_match, img_path, score = find_best_embedding(embeddings, persons)
+        # print(img_path)
+        return render_template('person_found.html', person=best_match, img_path=img_path, score=score)
     
     return render_template('success.html', message='Invalid file type')
 

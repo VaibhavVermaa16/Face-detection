@@ -2,37 +2,43 @@
 from mtcnn import MTCNN
 from PIL import Image
 import numpy as np
+import cv2
 
 detector=MTCNN()
 
+def preprocess_image(image_path):
+    img = cv2.imread(image_path)  # Load the image in color (BGR format by default)
+    
+    if img is None:
+        print(f"Error: Unable to read image at {image_path}")
+        return None
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB
+    img = cv2.resize(img, (160, 160))  # Resize to the model's input size
+    return img  # Return as uint8, values in range [0, 255]
+
 def extract_face(img_path):
-
-    # Load the image using PIL
+    # Load the image using your preprocess function (returns a NumPy array)
     try:
-        sample_img = Image.open(img_path)
-
-        # Check if the image has an alpha channel (4 channels - RGBA)
-        if sample_img.mode == 'RGBA':
-            sample_img = sample_img.convert('RGB')  # Convert RGBA to RGB
-
-        # Convert to NumPy array
-        sample_img = np.array(sample_img)
+        img = preprocess_image(img_path)  # Already in NumPy format (RGB)
+        if img is None:
+            return None
     except Exception as e:
-        print(f"Failed to load image with PIL: {e}")
+        print(f"Failed to load image: {e}")
         return None
 
     # Check if the image is empty
-    if sample_img.size == 0:
+    if img.size == 0:
         print(f"Image is empty: {img_path}")
         return None
 
     # Detect faces in the image
-    results = detector.detect_faces(sample_img)
+    results = detector.detect_faces(img)
 
     # Process results
     if results:
         x, y, width, height = results[0]['box']
-        face = sample_img[y:y + height, x:x + width]
+        face = img[y:y + height, x:x + width]
         return face
 
     print(f"No face found in image: {img_path}")

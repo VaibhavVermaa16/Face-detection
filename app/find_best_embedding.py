@@ -2,10 +2,11 @@
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-def find_best_embedding(query_embedding, persons, threshold=0.45):
+def find_best_embedding(query_embedding, persons, threshold=0.4):
     best_match = None
     min_distance = float('inf')
     image = None
+    score=0
 
     for item in persons:
         embeddings = item['embedding']
@@ -24,5 +25,6 @@ def find_best_embedding(query_embedding, persons, threshold=0.45):
                 min_distance = distance
                 best_match = item
                 image = img
+                score=1-distance
 
-    return best_match, image  # Return the best match or None if no match found
+    return best_match, image, score  # Return the best match or None if no match found
