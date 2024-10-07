@@ -58,7 +58,7 @@ def add_person():
         
         return redirect(url_for('get_embeddings'))
 
-    return render_template('all_persons.html', message='Invalid file type')
+    return redirect(url_for('upload_page'))
 
 # API route to get all embeddings
 @app.route('/get_embeddings', methods=['GET'])
