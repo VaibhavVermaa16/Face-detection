@@ -37,6 +37,7 @@ def save_embedding_to_db(embedding, data):
         'email': data['email'],
         'phone': data['phone'],
         'address': data['address'],
+        'image_paths':data['image_paths']
     }
 
     # Insert the document into the MongoDB collection
