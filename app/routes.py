@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for
 from app.utils import save_embedding_to_db, get_all_embeddings_from_db
 import os
 from werkzeug.utils import secure_filename
@@ -55,16 +55,17 @@ def add_person():
 
         # Store the embedding in the database
         save_embedding_to_db(embedding, data)
-        return render_template('success.html', message='Person added successfully!')
+        
+        return redirect(url_for('get_embeddings'))
 
-    return render_template('success.html', message='Invalid file type')
+    return render_template('all_persons.html', message='Invalid file type')
 
 # API route to get all embeddings
 @app.route('/get_embeddings', methods=['GET'])
 def get_embeddings():
-    embeddings = get_all_embeddings_from_db()
+    persons = get_all_embeddings_from_db()
     
-    return jsonify(embeddings)
+    return render_template('all_persons.html', persons=persons)
 
 if __name__ == '__main__':
     app.run(debug=True)
