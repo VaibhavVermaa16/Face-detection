@@ -2,29 +2,32 @@
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
+def average_embedding(embeddings):
+    return np.mean(embeddings, axis=0)
+
 def find_best_embedding(query_embedding, persons, threshold=0.4):
     best_match = None
     min_distance = float('inf')
-    image = None
-    score=0
+    score = 0
 
     for item in persons:
         embeddings = item['embedding']
+        
+        # Ensure all embeddings are NumPy arrays
+        embeddings = [np.array(embedding) if isinstance(embedding, list) else embedding for embedding in embeddings]
 
+        # Calculate the average embedding for the current person
+        avg_embedding = average_embedding(embeddings)
+        
         # Calculate cosine similarity
-        for i in range(len(embeddings)):
-            embedding = embeddings[i]
-            img = item['image_paths'][i]
-            if isinstance(embedding, list):
-                embedding = np.array(embedding)
-            similarity = cosine_similarity(query_embedding.reshape(1, -1), embedding.reshape(1, -1))
-            distance = 1 - similarity[0, 0]  # Convert similarity to distance
+        similarity = cosine_similarity(query_embedding.reshape(1, -1), avg_embedding.reshape(1, -1))
+        distance = 1 - similarity[0, 0]  # Convert similarity to distance
+        
+        # Check if the distance is below the threshold and if it's the best match so far
+        if distance < min_distance and distance < threshold:
+            min_distance = distance
+            best_match = item
+            score = 1 - distance  # Similarity score between 0 and 1
 
-            # Check if the distance is below the threshold
-            if distance < min_distance and distance < threshold:
-                min_distance = distance
-                best_match = item
-                image = img
-                score=1-distance
-
-    return best_match, image, score  # Return the best match or None if no match found
+    return best_match, score 
+ # Return the best match or None if no match found

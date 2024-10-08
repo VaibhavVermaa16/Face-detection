@@ -45,12 +45,10 @@
         <h3>{{ person['email'] }}</h3>
         <h3>{{ score }}</h3>
         <p>{{ person['address'] }}</p>
-        <img src="{{ img_path }}" alt="{{ person['name'] }}" width="200px" height="200px">
         <p>Embedding Length: {{ person['embedding']|length }}</p>
-
       </div>
-        {% else %}
-        <h3>No person found</h3>
+      {% else %}
+      <h3>No person found</h3>
       {% endif %}
     </div>
     <a href="{{ url_for('find_person') }}">Find other person</a>
