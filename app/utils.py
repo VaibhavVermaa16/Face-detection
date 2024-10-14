@@ -3,9 +3,13 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import numpy as np
 import os
-import config
+from dotenv import load_dotenv
+
+load_dotenv()
+
+uri = os.getenv('MONGODB_URI')
 # Create a new client and connect to the server
-client = MongoClient(config.MONGODB_URI, server_api=ServerApi('1'))
+client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['face_recognition_db']
 collection = db['embeddings']
 # Send a ping to confirm a successful connection
