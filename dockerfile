@@ -18,7 +18,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set env variable MONGODB_URI
-ENV MONGODB_URI="mongodb+srv://Cluster23798:Z2N1c3ljfGdN@cluster23798.jshkx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster23798"
+ENV MONGODB_URI=""
 
 # Copy the rest of the application code into the container
 COPY . .
