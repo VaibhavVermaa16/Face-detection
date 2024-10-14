@@ -12,6 +12,7 @@ uri = os.getenv('MONGODB_URI')
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['face_recognition_db']
 collection = db['embeddings']
+
 # Send a ping to confirm a successful connection
 try:
     client.admin.command('ping')
