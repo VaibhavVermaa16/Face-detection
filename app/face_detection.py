@@ -6,21 +6,21 @@ import cv2
 
 detector=MTCNN()
 
-def preprocess_image(image_path):
-    img = cv2.imread(image_path)  # Load the image in color (BGR format by default)
+def preprocess_image(image):
+    img = image  # Load the image in color (BGR format by default)
     
     if img is None:
-        print(f"Error: Unable to read image at {image_path}")
+        print(f"Error: Unable to read image")
         return None
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB
     img = cv2.resize(img, (160, 160))  # Resize to the model's input size
     return img  # Return as uint8, values in range [0, 255]
 
-def extract_face(img_path):
+def extract_face(image):
     # Load the image using your preprocess function (returns a NumPy array)
     try:
-        img = preprocess_image(img_path)  # Already in NumPy format (RGB)
+        img = preprocess_image(image)  # Already in NumPy format (RGB)
         if img is None:
             return None
     except Exception as e:
@@ -29,7 +29,7 @@ def extract_face(img_path):
 
     # Check if the image is empty
     if img.size == 0:
-        print(f"Image is empty: {img_path}")
+        print(f"Image is empty")
         return None
 
     # Detect faces in the image
@@ -41,5 +41,5 @@ def extract_face(img_path):
         face = img[y:y + height, x:x + width]
         return face
 
-    print(f"No face found in image: {img_path}")
+    print(f"No face found in image")
     return None

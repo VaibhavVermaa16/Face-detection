@@ -6,8 +6,8 @@ from app.face_detection import extract_face
 
 model = FaceNet()
 
-def feature_extractor(img_path,model=model):
-    face = extract_face(img_path)
+def feature_extractor(image,model=model):
+    face = extract_face(image)
     if face is None:
         print("No face detected in the image.")
         return None
