@@ -37,6 +37,7 @@ pillow==10.4.0
 protobuf==4.25.5
 Pygments==2.18.0
 pymongo==4.10.1
+python-dotenv==1.0.1
 requests==2.32.3
 rich==13.9.2
 scikit-learn==1.5.2
