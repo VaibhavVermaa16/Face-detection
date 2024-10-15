@@ -1,7 +1,6 @@
 import cv2
-from flask import Flask, request, render_template, redirect, url_for, flash
-import numpy as np
-from app.utils import delete_person_from_db, save_embedding_to_db, get_all_embeddings_from_db
+from flask import Flask, request
+from app.utils import delete_person_from_db, save_embedding_to_db, get_all_embeddings_from_db, download_from_dropbox, delete_from_dropbox, upload_to_dropbox
 import os
 from werkzeug.utils import secure_filename
 from app.feature_extractor import feature_extractor
@@ -53,15 +52,22 @@ def add_person():
     if len(files) < 4:
         return jsonify({"message": 'Please upload at least 4 images.'}), 200
 
-    embeddings = []   
+    embeddings = []  
+    dropbox_file_paths = []
     for file in files:
         if file.filename == '':
             return jsonify({"message": 'No file selected'}), 200
 
         # Ensure the file type is allowed
         if file and allowed_file(file.filename):
-            file_bytes = np.fromstring(file.read(), np.uint8)
-            image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+            filename = secure_filename(file.filename)
+            dropbox_path = f"/{filename}"
+            file_url = upload_to_dropbox(file, dropbox_path)
+            if not file_url:
+                return jsonify({"error": f"Failed to upload {file.filename} to Dropbox"}), 500
+            
+            dropbox_file_paths.append(dropbox_path)
+            image =download_from_dropbox(dropbox_path)
             image = cv2.resize(image, (224, 224))  # Resize image to reduce memory usage
             embedding = feature_extractor(image)
 
@@ -69,6 +75,9 @@ def add_person():
                 return jsonify({"message": 'No face detected in the image %s' % file.filename})
             else:
                 embeddings.append(embedding) # Store the embedding for this image
+   
+    for path in dropbox_file_paths:
+        delete_from_dropbox(path)
 
     data = {
         'id': id,
@@ -103,8 +112,14 @@ def search():
         return jsonify({"message": 'No file selected'}), 200
     
     if file and allowed_file(file.filename):
-        file_bytes = np.fromstring(file.read(), np.uint8)
-        image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        filename = secure_filename(file.filename)
+        dropbox_path = f"/{filename}"
+        print(dropbox_path)
+        file_url = upload_to_dropbox(file, dropbox_path)
+        if not file_url:
+            return jsonify({"error": f"Failed to upload {file.filename} to Dropbox"}), 500
+        
+        image =download_from_dropbox(dropbox_path)
         image = cv2.resize(image, (224, 224))  # Resize image to reduce memory usage
         embeddings = feature_extractor(image)
         
@@ -113,6 +128,7 @@ def search():
         
         
         best_match, score = find_best_embedding(embeddings, persons)
+        delete_from_dropbox(dropbox_path)
         return jsonify({'message': 'Person found successfully',
                         "person":best_match, 
                         "score":score}), 200
