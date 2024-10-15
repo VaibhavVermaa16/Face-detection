@@ -62,6 +62,7 @@ def add_person():
         if file and allowed_file(file.filename):
             file_bytes = np.fromstring(file.read(), np.uint8)
             image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+            image = cv2.resize(image, (224, 224))  # Resize image to reduce memory usage
             embedding = feature_extractor(image)
 
             if embedding is None:
@@ -104,6 +105,7 @@ def search():
     if file and allowed_file(file.filename):
         file_bytes = np.fromstring(file.read(), np.uint8)
         image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        image = cv2.resize(image, (224, 224))  # Resize image to reduce memory usage
         embeddings = feature_extractor(image)
         
         if embeddings is None:
