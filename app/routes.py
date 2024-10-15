@@ -121,5 +121,11 @@ def delete_person(id):
     message=delete_person_from_db(id)
     return jsonify({"message": message}), 200
 
+
+@app.route('/check', method=['GET'])
+def check():
+    return jsonify({"message": "API is working"}), 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)
