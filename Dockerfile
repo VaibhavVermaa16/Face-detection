@@ -18,7 +18,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set env variable MONGODB_URI
-ENV MONGODB_URI=""
+ENV MONGODB_URI="URI"
 
 # Copy the rest of the application code into the container
 COPY . .

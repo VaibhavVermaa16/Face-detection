@@ -1,6 +1,6 @@
 import cv2
 from flask import Flask, request, render_template, redirect, url_for, flash
-from app.utils import save_embedding_to_db, get_all_embeddings_from_db
+from app.utils import delete_person_from_db, save_embedding_to_db, get_all_embeddings_from_db
 import os
 from werkzeug.utils import secure_filename
 from app.feature_extractor import feature_extractor
@@ -40,6 +40,8 @@ def add_person():
         # return render_template('success.html', message='No file part in the request')
 
     # Fetch form data
+    # generate a unique id for the person
+    id = str(uuid.uuid4())
     name = request.form.get('name')
     age = request.form.get('age')
     email = request.form.get('email')
@@ -84,6 +86,7 @@ def add_person():
                 images.append(file_path) # Store the image path
 
     data = {
+        'id': id,
         'name': name,
         'age': age,
         'email': email,
@@ -136,7 +139,6 @@ def search():
         
         
         best_match, score = find_best_embedding(embeddings, persons)
-        # print(img_path)
         return jsonify({'message': 'Person found successfully',
                         "person":best_match, 
                         "score":score}), 200
@@ -144,6 +146,10 @@ def search():
         
     return jsonify({"message": 'Invalid file type'}), 200
     # return render_template('success.html', message='Invalid file type')
+    
+def delete_person(id):
+    message=delete_person_from_db(id)
+    return jsonify({"message": message}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

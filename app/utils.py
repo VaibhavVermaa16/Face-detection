@@ -25,13 +25,15 @@ except Exception as e:
 def save_embedding_to_db(embedding, data):
     # If embedding is a NumPy array, convert it to a list
     for i in range(len(embedding)):
-        if isinstance(embedding[i], np.ndarray):
+        if not isinstance(embedding[i], np.ndarray):
             embedding[i] = embedding[i].tolist()
   
 
+    avg_embedding= np.mean(embedding, axis=0)
     # Prepare the document to be inserted into the database
     document = {
-        'embedding': embedding, # Save the embedding (list or array)
+        'id': data['id'],
+        'embedding': avg_embedding, # Save the embedding (list or array)
         'name': data['name'],
         'age': data['age'],
         'email': data['email'],
@@ -46,3 +48,7 @@ def save_embedding_to_db(embedding, data):
 # Function to retrieve all embeddings from the database
 def get_all_embeddings_from_db():
     return list(collection.find({}, {'_id': 0}))  # Exclude MongoDB's default ID
+
+def delete_person_from_db(id):
+    collection.delete_one({'id': id})
+    return 'Person deleted successfully'

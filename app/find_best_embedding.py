@@ -11,16 +11,18 @@ def find_best_embedding(query_embedding, persons, threshold=0.4):
     score = 0
 
     for item in persons:
-        embeddings = item['embedding']
+        embedding = item['embedding']
         
         # Ensure all embeddings are NumPy arrays
-        embeddings = [np.array(embedding) if isinstance(embedding, list) else embedding for embedding in embeddings]
+        # embeddings = [np.array(embedding) if isinstance(embedding, list) else embedding for embedding in embeddings]
 
         # Calculate the average embedding for the current person
-        avg_embedding = average_embedding(embeddings)
+        # avg_embedding = average_embedding(embeddings)
         
         # Calculate cosine similarity
-        similarity = cosine_similarity(query_embedding.reshape(1, -1), avg_embedding.reshape(1, -1))
+        if isinstance(embedding, list):
+            embedding = np.array(embedding)
+        similarity = cosine_similarity(query_embedding.reshape(1, -1), embedding.reshape(1, -1))
         distance = 1 - similarity[0, 0]  # Convert similarity to distance
         
         # Check if the distance is below the threshold and if it's the best match so far
