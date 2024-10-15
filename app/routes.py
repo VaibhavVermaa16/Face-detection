@@ -122,7 +122,7 @@ def delete_person(id):
     return jsonify({"message": message}), 200
 
 
-@app.route('/check', method=['GET'])
+@app.route('/check', methods=['GET'])
 def check():
     return jsonify({"message": "API is working"}), 200
 
