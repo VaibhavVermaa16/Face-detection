@@ -23,23 +23,19 @@ except Exception as e:
 
 # Function to save embeddings
 def save_embedding_to_db(embedding, data):
-    # If embedding is a NumPy array, convert it to a list
-    for i in range(len(embedding)):
-        if not isinstance(embedding[i], np.ndarray):
-            embedding[i] = embedding[i].tolist()
+    avg_embedding = np.mean(embedding, axis=0)
+    embedding = avg_embedding.tolist()
   
 
-    avg_embedding= np.mean(embedding, axis=0)
     # Prepare the document to be inserted into the database
     document = {
         'id': data['id'],
-        'embedding': avg_embedding, # Save the embedding (list or array)
+        'embedding': embedding, # Save the embedding (list or array)
         'name': data['name'],
         'age': data['age'],
         'email': data['email'],
         'phone': data['phone'],
-        'address': data['address'],
-        'image_paths':data['image_paths']
+        'address': data['address']
     }
 
     # Insert the document into the MongoDB collection
