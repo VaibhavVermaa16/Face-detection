@@ -122,6 +122,8 @@ def search():
         
     return jsonify({"message": 'Invalid file type'}), 200
     
+
+@app.route('/delete_person/<id>', methods=['POST'])
 def delete_person(id):
     message=delete_person_from_db(id)
     return jsonify({"message": message}), 200
